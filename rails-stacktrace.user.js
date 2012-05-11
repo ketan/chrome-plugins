@@ -25,7 +25,7 @@ if (nodes = document.getElementById("traces") && document.querySelectorAll("#tra
     for (var i=0, line; line = lines[i]; i++){
       var parts       = line.split(":in ");
       var pathAndLine = parts[0].split(":");
-      newHtml.push("<a href='txmt://open?url=file://", railsRoot , '/', pathAndLine[0], "&amp;line=", pathAndLine[1], "&amp;column=1'>", line, "</a>\n");
+      newHtml.push("<a href='mvim://open?url=file://", railsRoot , '/', pathAndLine[0], "&amp;line=", pathAndLine[1], "&amp;column=1'>", line, "</a>\n");
     }
     node.innerHTML = newHtml.join("");
   }
