@@ -199,23 +199,24 @@ function cleanupGoServerLogs(element){
   content = content.replace(/<\/exec>\./g, '');
 
   content = content.replace(/<arg>(.*)<\/arg>\n/g, ' "$1"');
-  content = content.replace(/\[go\].*<exec command="(.*)" workingdir="(.*)".*\n/g, "[$2] $ $1");
-  content = content.replace(/\[go\].*<exec command="(.*)".*\n/g, "$ $1");
+  content = content.replace(/\[(go|cruise)\] Start to execute task: <exec command="(.*)" workingdir="(.*)".*\n/g, "[$3] $ $2");
+  content = content.replace(/\[(go|cruise)\] Start to execute task: <exec command="(.*)".*\n/g, "$ $2");
 
-  content = content.replace(/\[go\] setting environment variable 'CRUISE_.*\n/g, '');
-  content = content.replace(/\[go\] setting environment variable '(.*)' to value '(.*)'/g, '$ export $1="$2"');
+  content = content.replace(/\[(go|cruise)\] setting environment variable 'CRUISE_.*\n/g, '');
+  content = content.replace(/\[(go|cruise)\] overriding environment variable '(.*)' with value '(.*)'/g, '$ export $2="$3"');
+  content = content.replace(/\[(go|cruise)\] setting environment variable '(.*)' to value '(.*)'/g, '$ export $2="$3"');
   
-  content = content.replace(/\[go\] Start updating (.*) at revision (.*) from (.*)\nCloning into (.*)\nHEAD is now at (.*)/gm, '$ git clone "$3"\nCloning into $4\n$ cd $1\n[$1] $ git reset --hard $2\nHEAD is now at $5');
+  content = content.replace(/\[(go|cruise)\] Start updating (.*) at revision (.*) from (.*)\nCloning into (.*)\nHEAD is now at (.*)/gm, '$ git clone "$4"\nCloning into $5\n$ cd $2\n[$2] $ git reset --hard $3\nHEAD is now at $6');
   
-  content = content.replace(/\[go\] Start to build (.*) at (.*)/g, "===> Starting to build at $2");
-  content = content.replace(/\[go\] Start to prepare (.*) at (.*)/g, "===> Preparing to build at $2");
-  content = content.replace(/\[go\] Cleaning working directory "(.*)" (.*)/g, "===> Cleaning working directory $1");
-  content = content.replace(/\[go\] Current job status: (.*)/g, "===> Current job status $1");
-  content = content.replace(/\[go\] Start to create properties.*\n/g, '');
-  content = content.replace(/\[go\] Start to upload.*\n/g, '');
-  content = content.replace(/\[go\] Uploading artifacts from (.*) to \[(.*)\]/g, '===> Uploading artifacts from $1');
-  content = content.replace(/\[go\] Uploading artifacts from (.*) to (.*)/g, '===> Uploading artifacts from $1');
-  content = content.replace(/\[go\] Job completed (.*) at (.*)/g, '===> Completed build at $2');
+  content = content.replace(/\[(go|cruise)\] Start to build (.*) at (.*)/g, "===> Starting to build at $3");
+  content = content.replace(/\[(go|cruise)\] Start to prepare (.*) at (.*)/g, "===> Preparing to build at $3");
+  content = content.replace(/\[(go|cruise)\] Cleaning working directory "(.*)" (.*)/g, "===> Cleaning working directory $2");
+  content = content.replace(/\[(go|cruise)\] Current job status: (.*)/g, "===> Current job status $2");
+  content = content.replace(/\[(go|cruise)\] Start to create properties.*\n/g, '');
+  content = content.replace(/\[(go|cruise)\] Start to upload.*\n/g, '');
+  content = content.replace(/\[(go|cruise)\] Uploading artifacts from (.*) to \[(.*)\]/g, '===> Uploading artifacts from $2');
+  content = content.replace(/\[(go|cruise)\] Uploading artifacts from (.*) to (.*)/g, '===> Uploading artifacts from $2');
+  content = content.replace(/\[(go|cruise)\] Job completed (.*) at (.*)/g, '===> Completed build at $2');
 
   var newElement = document.createElement('code');
   newElement.setAttribute('style', "word-wrap: break-word; white-space: pre-wrap;");
@@ -239,7 +240,9 @@ function cleanupGoServerLogs(element){
 
     newElement.appendChild(colorElement);
   }
-  
+
+  element.parentNode.style.backgroundColor = 'black';
+  element.parentNode.style.color = 'white';
   element.parentNode.insertBefore(newElement, element);
   element.parentNode.removeChild(element);
 }
@@ -253,3 +256,5 @@ if(window.location.href.toString().match("\/cruise-output\/console.log$")){
 }
 
 cleanupGoServerLogs(element);
+
+
